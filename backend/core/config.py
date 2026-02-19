@@ -1,4 +1,7 @@
 import os 
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 class Settings:
@@ -13,6 +16,13 @@ class Settings:
     POSTGRES_DB = os.getenv("POSTGRES_DB")
     POSTGRES_SERVER = os.getenv("POSTGRES_SERVER")
     POSTGRES_PORT = os.getenv("POSTGRES_PORT")
+
+    SECRET_KEY = os.getenv("SECRET_KEY")
+    ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
+    REFRESH_TOKEN_EXPIRE_MINUTES = os.getenv("REFRESH_TOKEN_EXPIRE_MINUTES")
+    JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
+
+    
 
     DB_MODE: str = os.getenv("DB_MODE", "sqlite")  # Default to SQLITE if not set
 

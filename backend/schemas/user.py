@@ -48,4 +48,19 @@ class ViewUser(BaseModel):
         orm_mode = True 
 
 
+class ViewSingleUser(BaseModel):
+    id: int 
+    email: EmailStr
+    username: str 
+    is_active: bool 
+
+    class Config:
+        orm_mode = True
+
+
+class Token(BaseModel):
+    access_token: str 
+    refresh_token: str 
+    token_type: str = "bearer"
+
 

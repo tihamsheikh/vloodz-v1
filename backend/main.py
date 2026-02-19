@@ -5,8 +5,10 @@ from uvicorn import run
 from core.config import settings 
 from apis.base import base_router 
 
-# class 12 facebook 
 
+# TODO: completed the /user/token
+# TODO: complete the the get all users router 
+# facebook 13 class / yt 2nd last class 
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
