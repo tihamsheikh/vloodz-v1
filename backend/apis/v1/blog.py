@@ -11,7 +11,8 @@ from schemas.blog import (
 from db.session import get_db 
 from sqlalchemy.orm import Session 
 from repositories.blog import provide_blog_repository
-
+from repositories.user import RepositoryUser
+from db.models.user import User 
 
 router = APIRouter()
 
@@ -20,11 +21,12 @@ router = APIRouter()
 @router.post("")
 async def create_blog(
     payload: CreateBlog,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(RepositoryUser.get_current_user)
 ):
     
     repo = provide_blog_repository(db)
-    repo.create_blog(data=payload, author_id= 1)
+    repo.create_blog(data=payload, author_id=current_user.id)
 
     print(payload)
     return {"message": "blog created successfully"}
@@ -77,7 +79,8 @@ async def get_all_blogs(
 async def update_blog(
     blog_id: int,
     payload: UpdateBlog,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(RepositoryUser.get_current_user)
 )-> UpdateBlogResponse:
     
     repo = provide_blog_repository(db)
@@ -94,7 +97,14 @@ async def update_blog(
             )
 async def delete_blog(
     blog_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(RepositoryUser.get_current_user)
 ):
     repo = provide_blog_repository(db)
     repo.delete_blog(blog_id=blog_id)
+
+
+
+
+
+

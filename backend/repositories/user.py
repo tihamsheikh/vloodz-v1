@@ -10,7 +10,7 @@ from db.session import get_db
 from utils.password_manager import PasswordManager 
 from utils.jwt_manager import verify_token
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="v1/users/token")
 
 
 
@@ -24,6 +24,10 @@ class RepositoryUser:
         return self.db.query(User).filter(
             func.lower(User.email) == func.lower(email)
             ).first()
+    
+    def get_user_by_username(self, username: str)-> User | None:
+
+        return self.db.query(User).filter(func.lower(User.username) == func.lower(username)).first()
     
     
     def create_user(
@@ -72,14 +76,16 @@ class RepositoryUser:
         # print(self.db.query(User).filter(User.id == id, User.is_active.is_(True)).first())
         return self.db.query(User).filter(User.id == id, User.is_active.is_(True)).first()
     
+    # changed the authorization way from email to username 
     def get_user_for_token(
         self, 
-        email: str, 
+        username: str, 
         password: str
     )-> User | None:
         
-        user = self.get_user_by_email(email=email)
-
+        # user = self.get_user_by_email(email=email)
+        user = self.get_user_by_username(username=username)
+        print(user.username, type(user.username))
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,

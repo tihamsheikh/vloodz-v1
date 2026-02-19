@@ -10,6 +10,7 @@ from utils.jwt_manager import (
     create_access_token, 
     verify_token
 )
+from db.models.user import User
 
 
 router = APIRouter() 
@@ -17,7 +18,7 @@ router = APIRouter()
 @router.post("", 
              response_model=ViewUser
 )
-def create_user(
+async def create_user(
     payload: CreateUser, 
     db: Session = Depends(get_db)
 ):
@@ -35,7 +36,11 @@ def create_user(
 
 
 @router.get("/{user_id}", response_model=ViewSingleUser)
-def get_users(user_id: int,db: Session = Depends(get_db)):   
+async def get_users(
+    user_id: int,
+    db: Session = Depends(get_db),
+    cureent_user: User = Depends(RepositoryUser.get_current_user)
+):   
     
     repo = RepositoryUser(db=db)
     user =repo.get_user_by_id(user_id)
@@ -47,14 +52,15 @@ def get_users(user_id: int,db: Session = Depends(get_db)):
         is_active= user.is_active 
     )
 
-# day 9 2 previews vid left fastapi: 13:30-> make the tokens uniqe to themself, for access for token api and refresh for refresh api
+# TODO: day 9 2 previews vid left fastapi: 13:30-> make the tokens uniqe to themself, for access for token api and refresh for refresh api
 @router.post("/token", response_model=Token)
 async def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db)
 ):
+    print(form_data.username, "form_data")
     user = RepositoryUser(db=db).get_user_for_token(
-        email=form_data.username,
+        username=form_data.username,
         password=form_data.password
     )
 
